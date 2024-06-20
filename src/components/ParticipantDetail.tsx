@@ -1,44 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { getParticipantById } from '../services/api'; 
+import { Participant } from '../services/types';
+import { deleteParticipant } from '../services/api';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
-interface Participant {
-  id: number;
-  name: string;
-  gender: string;
-  age: number;
-  club: string;
-  disciplines: Discipline[];
-  results: Result[];
-}
-
-interface Discipline {
-  id: number;
-  name: string;
-  resultType: string;
-}
-
-interface Result {
-  id: number;
-  resultType: string;
-  date: string;
-  resultValue: string;
-  disciplineId: number;
-}
 
 const ParticipantDetail: React.FC = () => {
   const [participant, setParticipant] = useState<Participant | null>(null);
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/participants/${id}`)
-      .then(response => setParticipant(response.data))
-      .catch(error => console.error('Error fetching participant:', error));
+    if (id) {
+      getParticipantById(parseInt(id))
+        .then(response => setParticipant(response.data))
+        .catch(error => console.error('Error fetching participant:', error));
+    }
   }, [id]);
 
   if (!participant) {
     return <div>Loading...</div>;
   }
+
+  const handleDelete = () => {
+    if (id && window.confirm('Are you sure you want to delete this participant?')) {
+      deleteParticipant(parseInt(id))
+        .then(() => navigate('/'))
+        .catch(error => console.error('Error deleting participant:', error));
+    }
+  };
 
   return (
     <div>
@@ -59,8 +49,14 @@ const ParticipantDetail: React.FC = () => {
         ))}
       </ul>
       <Link to={`/participants/${participant.id}/edit`}>Edit Participant</Link>
+      {id && (
+          <button type="button" onClick={handleDelete} style={{ marginLeft: '10px', color: 'white' }}>
+            Delete Participant
+          </button>
+        )}
     </div>
   );
 };
 
 export default ParticipantDetail;
+

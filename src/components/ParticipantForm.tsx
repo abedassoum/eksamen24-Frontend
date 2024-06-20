@@ -1,30 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
-interface Participant {
-  id?: number;
-  name: string;
-  gender: string;
-  age: number;
-  club: string;
-  disciplines: Discipline[];
-  results: Result[];
-}
-
-interface Discipline {
-  id: number;
-  name: string;
-  resultType: string;
-}
-
-interface Result {
-  id: number;
-  resultType: string;
-  date: string;
-  resultValue: string;
-  disciplineId: number;
-}
+import { addParticipant, updateParticipant, getParticipantById } from '../services/api'; 
+import { Participant } from '../services/types';
 
 const ParticipantForm: React.FC = () => {
   const [participant, setParticipant] = useState<Participant>({
@@ -35,13 +12,12 @@ const ParticipantForm: React.FC = () => {
     disciplines: [],
     results: [],
   });
-
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     if (id) {
-      axios.get(`/api/participants/${id}`)
+      getParticipantById(parseInt(id))
         .then(response => setParticipant(response.data))
         .catch(error => console.error('Error fetching participant:', error));
     }
@@ -57,12 +33,13 @@ const ParticipantForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const request = id ? axios.put(`/api/participants/${id}`, participant) : axios.post('/api/participants', participant);
+    const request = id ? updateParticipant(parseInt(id), participant) : addParticipant(participant);
 
     request
       .then(() => navigate('/'))
       .catch(error => console.error('Error saving participant:', error));
   };
+
 
   return (
     <div>

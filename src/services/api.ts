@@ -1,6 +1,9 @@
 import axios from 'axios';
+import { Participant } from './types';
 
 const API_BASE_URL = import.meta.env.VITE_DEV_API_BASE_URL;
+
+
 
 export const getParticipants = () => {
   console.log('Fetching participants...');
@@ -29,14 +32,13 @@ export const getParticipantById = (id: number) => {
 };
 
 
-export const addParticipant = (participant: unknown) => {
+export const addParticipant = (participant: Participant) => {
   return axios.post(`${API_BASE_URL}/api/participants`, participant);
 };
 
-export const updateParticipant = (id: number, participant: unknown) => {
+export const updateParticipant = (id: number, participant: Participant) => {
   return axios.put(`${API_BASE_URL}/api/participants/${id}`, participant);
 };
-
 export const deleteParticipant = (id: number) => {
   return axios.delete(`${API_BASE_URL}/api/participants/${id}`);
 };
