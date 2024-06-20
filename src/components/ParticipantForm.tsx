@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addParticipant, updateParticipant, getParticipantById } from '../services/api'; 
+import { addParticipant, updateParticipant, getParticipantById } from '../api/api'; 
 import { Participant, Discipline, Result } from '../services/types';
 
 const ParticipantForm: React.FC = () => {

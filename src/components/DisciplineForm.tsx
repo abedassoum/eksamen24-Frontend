@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getDisciplineById, addDiscipline, updateDiscipline } from '../services/api'; 
+import { getDisciplineById, addDiscipline, updateDiscipline } from '../api/api'; 
 import { Discipline } from '../services/types';
 
 const DisciplineForm: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteDiscipline, getDisciplines } from '../services/api'; 
+import { deleteDiscipline, getDisciplines } from '../api/api'; 
 
 interface Discipline {
   id: number;

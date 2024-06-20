@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getParticipants, filterParticipants, searchParticipants } from '../services/api'; 
+import { getParticipants, filterParticipants, searchParticipants } from '../api/api'; 
 import { Participant } from '../services/types';
 
 const ParticipantList: React.FC = () => {

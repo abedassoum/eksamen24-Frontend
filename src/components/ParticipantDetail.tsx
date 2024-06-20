@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getParticipantById } from '../services/api'; 
+import { getParticipantById } from '../api/api'; 
 import { Participant } from '../services/types';
-import { deleteParticipant } from '../services/api';
+import { deleteParticipant } from '../api/api';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
 

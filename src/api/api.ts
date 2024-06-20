@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Participant } from './types';
+import { Participant } from '../services/types';
 
 const API_BASE_URL = import.meta.env.VITE_DEV_API_BASE_URL;
 
