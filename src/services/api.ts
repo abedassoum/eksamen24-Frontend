@@ -37,11 +37,14 @@ export const addParticipant = (participant: Participant) => {
 };
 
 export const searchParticipants = (name: string) => {
-  return axios.get(`${API_BASE_URL}/api/participants/search`, { params: { name } });
+  return axios.get<Participant[]>(`${API_BASE_URL}/api/participants/search`, { params: { name } });
 };
 
-export const filterParticipants = (gender: string, age: number | null) => {
+
+export const filterParticipants = (name: string, club: string, gender: string, age: number | null) => {
   const params: any = {};
+  if (name) params.name = name;
+  if (club) params.club = club;
   if (gender) params.gender = gender;
   if (age !== null) params.age = age;
 

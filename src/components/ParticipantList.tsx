@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getParticipants, filterParticipants } from '../services/api'; 
+import { getParticipants, filterParticipants, searchParticipants } from '../services/api'; 
 import { Participant } from '../services/types';
 
 const ParticipantList: React.FC = () => {
   const [participants, setParticipants] = useState<Map<number, Participant>>(new Map());
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filterClub, setFilterClub] = useState<string>('');
   const [filterGender, setFilterGender] = useState<string>('');
   const [filterAge, setFilterAge] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +34,11 @@ const ParticipantList: React.FC = () => {
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    filterParticipants(filterGender, filterAge)
+    const searchValue = event.target.value;
+    setSearchTerm(searchValue);
+    searchParticipants(searchValue)
       .then(response => {
-        const participantsArray: Participant[] = response.data; 
+        const participantsArray: Participant[] = response.data;
 
         const participantsMap = new Map<number, Participant>();
         participantsArray.forEach(participant => {
@@ -52,7 +54,27 @@ const ParticipantList: React.FC = () => {
   };
 
   const handleFilter = () => {
-    filterParticipants(filterGender, filterAge)
+    filterParticipants(searchTerm, filterClub, filterGender, filterAge)
+      .then(response => {
+        const participantsArray: Participant[] = response.data;
+
+        const participantsMap = new Map<number, Participant>();
+        participantsArray.forEach(participant => {
+          participantsMap.set(participant.id, participant);
+        });
+
+        setParticipants(participantsMap);
+      })
+      .catch(error => {
+        setError('Error filtering participants');
+        console.error('Error filtering participants:', error);
+      });
+  };
+
+  const handleClubChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const clubValue = event.target.value;
+    setFilterClub(clubValue);
+    filterParticipants(searchTerm, clubValue, filterGender, filterAge)
       .then(response => {
         const participantsArray: Participant[] = response.data;
 
@@ -70,12 +92,43 @@ const ParticipantList: React.FC = () => {
   };
 
   const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilterGender(event.target.value);
+    const genderValue = event.target.value;
+    setFilterGender(genderValue);
+    filterParticipants(searchTerm, filterClub, genderValue, filterAge)
+      .then(response => {
+        const participantsArray: Participant[] = response.data;
+
+        const participantsMap = new Map<number, Participant>();
+        participantsArray.forEach(participant => {
+          participantsMap.set(participant.id, participant);
+        });
+
+        setParticipants(participantsMap);
+      })
+      .catch(error => {
+        setError('Error filtering participants');
+        console.error('Error filtering participants:', error);
+      });
   };
 
   const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const age = event.target.value ? parseInt(event.target.value, 10) : null;
-    setFilterAge(age);
+    const ageValue = event.target.value ? parseInt(event.target.value, 10) : null;
+    setFilterAge(ageValue);
+    filterParticipants(searchTerm, filterClub, filterGender, ageValue)
+      .then(response => {
+        const participantsArray: Participant[] = response.data;
+
+        const participantsMap = new Map<number, Participant>();
+        participantsArray.forEach(participant => {
+          participantsMap.set(participant.id, participant);
+        });
+
+        setParticipants(participantsMap);
+      })
+      .catch(error => {
+        setError('Error filtering participants');
+        console.error('Error filtering participants:', error);
+      });
   };
 
   return (
@@ -90,6 +143,12 @@ const ParticipantList: React.FC = () => {
         className="mt-4 mb-4 p-2 border border-gray-300 rounded"
       />
       <div className="flex gap-4">
+        <select value={filterClub} onChange={handleClubChange} className="p-2 border border-gray-300 rounded">
+          <option value="">All Clubs</option>
+          <option value="Sport Club">Sport Club</option>
+          <option value="Star Club">Star Club</option>
+          <option value="Fighters Club">Fighters Club</option>
+        </select>
         <select value={filterGender} onChange={handleGenderChange} className="p-2 border border-gray-300 rounded">
           <option value="">All Genders</option>
           <option value="male">Male</option>
@@ -117,3 +176,4 @@ const ParticipantList: React.FC = () => {
 };
 
 export default ParticipantList;
+
