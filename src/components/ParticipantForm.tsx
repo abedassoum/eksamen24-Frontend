@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addParticipant, updateParticipant, getParticipantById } from '../services/api'; 
-import { Participant } from '../services/types';
+import { Participant, Discipline, Result } from '../services/types';
 
 const ParticipantForm: React.FC = () => {
   const [participant, setParticipant] = useState<Participant>({
@@ -31,6 +31,38 @@ const ParticipantForm: React.FC = () => {
     }));
   };
 
+  const handleDisciplineChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setParticipant(prevParticipant => {
+      const disciplines = [...prevParticipant.disciplines];
+      disciplines[index] = { ...disciplines[index], [name]: value };
+      return { ...prevParticipant, disciplines };
+    });
+  };
+
+  const handleResultChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setParticipant(prevParticipant => {
+      const results = [...prevParticipant.results];
+      results[index] = { ...results[index], [name]: value };
+      return { ...prevParticipant, results };
+    });
+  };
+
+  const addDiscipline = () => {
+    setParticipant(prevParticipant => ({
+      ...prevParticipant,
+      disciplines: [...prevParticipant.disciplines, { id: 0, name: '', resultType: '' }]
+    }));
+  };
+
+  const addResult = () => {
+    setParticipant(prevParticipant => ({
+      ...prevParticipant,
+      results: [...prevParticipant.results, { id: 0, resultType: '', date: '', resultValue: '', disciplineId: 0 }]
+    }));
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const request = id ? updateParticipant(parseInt(id), participant) : addParticipant(participant);
@@ -39,7 +71,6 @@ const ParticipantForm: React.FC = () => {
       .then(() => navigate('/'))
       .catch(error => console.error('Error saving participant:', error));
   };
-
 
   return (
     <div>
@@ -66,6 +97,37 @@ const ParticipantForm: React.FC = () => {
           <label>Club:</label>
           <input type="text" name="club" value={participant.club} onChange={handleChange} required />
         </div>
+
+        <div>
+          <h2>Disciplines</h2>
+          {participant.disciplines.map((discipline, index) => (
+            <div key={index}>
+              <label>Name:</label>
+              <input type="text" name="name" value={discipline.name} onChange={e => handleDisciplineChange(index, e)} />
+              <label>Result Type:</label>
+              <input type="text" name="resultType" value={discipline.resultType} onChange={e => handleDisciplineChange(index, e)} />
+            </div>
+          ))}
+          <button type="button" onClick={addDiscipline}>Add Discipline</button>
+        </div>
+
+        <div>
+          <h2>Results</h2>
+          {participant.results.map((result, index) => (
+            <div key={index}>
+              <label>Result Type:</label>
+              <input type="text" name="resultType" value={result.resultType} onChange={e => handleResultChange(index, e)} />
+              <label>Date:</label>
+              <input type="date" name="date" value={result.date} onChange={e => handleResultChange(index, e)} />
+              <label>Result Value:</label>
+              <input type="text" name="resultValue" value={result.resultValue} onChange={e => handleResultChange(index, e)} />
+              <label>Discipline ID:</label>
+              <input type="number" name="disciplineId" value={result.disciplineId} onChange={e => handleResultChange(index, e)} />
+            </div>
+          ))}
+          <button type="button" onClick={addResult}>Add Result</button>
+        </div>
+
         <button type="submit">Save Participant</button>
       </form>
     </div>

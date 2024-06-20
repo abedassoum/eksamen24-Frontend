@@ -9,13 +9,13 @@ interface Participant {
   }
   
   interface Discipline {
-    id: number;
+    id?: number;
     name: string;
     resultType: string;
   }
   
   interface Result {
-    id: number;
+    id?: number;
     resultType: string;
     date: string;
     resultValue: string;

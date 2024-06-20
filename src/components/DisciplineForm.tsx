@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
-interface Discipline {
-  id?: number;
-  name: string;
-  resultType: string;
-}
+import { getDisciplineById, addDiscipline, updateDiscipline } from '../services/api'; 
+import { Discipline } from '../services/types';
 
 const DisciplineForm: React.FC = () => {
   const [discipline, setDiscipline] = useState<Discipline>({
@@ -19,7 +14,7 @@ const DisciplineForm: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`/api/disciplines/${id}`)
+      getDisciplineById(parseInt(id))
         .then(response => setDiscipline(response.data))
         .catch(error => console.error('Error fetching discipline:', error));
     }
@@ -35,7 +30,7 @@ const DisciplineForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const request = id ? axios.put(`/api/disciplines/${id}`, discipline) : axios.post('/api/disciplines', discipline);
+    const request = id ? updateDiscipline(parseInt(id), discipline) : addDiscipline(discipline);
 
     request
       .then(() => navigate('/disciplines'))
