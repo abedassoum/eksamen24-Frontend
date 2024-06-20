@@ -47,7 +47,7 @@ const DisciplineList: React.FC = () => {
             <button 
               type="button" 
               onClick={() => handleDelete(discipline.id)} 
-              style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}
+              style={{ marginLeft: '10px', color: 'white' }}
             >
               Delete Discipline
             </button>
