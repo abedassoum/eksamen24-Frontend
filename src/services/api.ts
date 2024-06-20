@@ -36,6 +36,10 @@ export const addParticipant = (participant: Participant) => {
   return axios.post(`${API_BASE_URL}/api/participants`, participant);
 };
 
+export const searchParticipants = (name: string) => {
+  return axios.get(`${API_BASE_URL}/api/participants/search`, { params: { name } });
+};
+
 export const updateParticipant = (id: number, participant: Participant) => {
   return axios.put(`${API_BASE_URL}/api/participants/${id}`, participant);
 };
