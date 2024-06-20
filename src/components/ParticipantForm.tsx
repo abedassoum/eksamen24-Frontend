@@ -65,12 +65,19 @@ const ParticipantForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log('Submitting participant:', JSON.stringify(participant, null, 2));  // Detailed log
     const request = id ? updateParticipant(parseInt(id), participant) : addParticipant(participant);
-
+  
     request
       .then(() => navigate('/'))
-      .catch(error => console.error('Error saving participant:', error));
+      .catch(error => {
+        console.error('Error saving participant:', error);
+        if (error.response) {
+          console.error('Error response data:', error.response.data);  // Log the response data from backend
+        }
+      });
   };
+  
 
   return (
     <div>
