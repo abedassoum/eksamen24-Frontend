@@ -40,6 +40,14 @@ export const searchParticipants = (name: string) => {
   return axios.get(`${API_BASE_URL}/api/participants/search`, { params: { name } });
 };
 
+export const filterParticipants = (gender: string, age: number | null) => {
+  const params: any = {};
+  if (gender) params.gender = gender;
+  if (age !== null) params.age = age;
+
+  return axios.get<Participant[]>(`${API_BASE_URL}/api/participants/filter`, { params });
+};
+
 export const updateParticipant = (id: number, participant: Participant) => {
   return axios.put(`${API_BASE_URL}/api/participants/${id}`, participant);
 };
